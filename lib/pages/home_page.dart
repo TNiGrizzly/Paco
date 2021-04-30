@@ -6,6 +6,8 @@ import 'package:ur_notes/json/notes_json.dart';
 import 'package:ur_notes/theme/colors.dart';
 import 'package:ur_notes/widgets/header.dart';
 
+import 'card_detail_page.dart';
+
 class HomePage extends StatefulWidget {
   @override
   _HomePageState createState() => _HomePageState();
@@ -35,7 +37,9 @@ class _HomePageState extends State<HomePage> {
   }
 
   Widget getBody() {
-    var size = MediaQuery.of(context).size;
+    var size = MediaQuery
+        .of(context)
+        .size;
     return SafeArea(
       child: ListView(
         padding: EdgeInsets.only(top: 20),
@@ -47,16 +51,6 @@ class _HomePageState extends State<HomePage> {
           Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Padding(
-                padding: const EdgeInsets.only(left: 15, right: 15),
-                child: Text(
-                  "PAINED",
-                  style: TextStyle(
-                      fontSize: 11,
-                      fontWeight: FontWeight.w500,
-                      color: black.withOpacity(0.6)),
-                ),
-              ),
               SizedBox(
                 height: 10,
               ),
@@ -69,45 +63,68 @@ class _HomePageState extends State<HomePage> {
   }
 
   Widget getGridView() {
-    var size = MediaQuery.of(context).size;
+    var size = MediaQuery
+        .of(context)
+        .size;
     return Column(
         children: List.generate(notes.length, (index) {
-      return Padding(
-        padding: const EdgeInsets.only(left: 8, right: 8, bottom: 8),
-        child: Container(
-          width: size.width,
-          decoration: BoxDecoration(
-              color: cardColor,
-              borderRadius: BorderRadius.circular(8),
-              border: Border.all(color: black.withOpacity(0.1))),
-          child: Padding(
-            padding:
-                const EdgeInsets.only(left: 8, right: 8, top: 12, bottom: 12),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  notes[index]['title'],
-                  style: TextStyle(
-                      fontSize: 15,
-                      fontWeight: FontWeight.w500,
-                      color: Colors.white.withOpacity(0.9)),
+          return GestureDetector(
+            onTap: () {
+              Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                  builder: (_)
+              =>
+                  CardDetailPage(
+                    title: notes[index]['title'],
+                    description: notes[index]['description'],
+                  )));
+            },
+            child: Padding(
+              padding: const EdgeInsets.only(left: 8, right: 8, bottom: 8),
+              child: Container(
+                width: size.width,
+                decoration: BoxDecoration(
+                    color: cardColor,
+                    borderRadius: BorderRadius.circular(8),
+                    border: Border.all(color: black.withOpacity(0.1))),
+                child: Padding(
+                  padding:
+                  const EdgeInsets.only(left: 8, right: 8, top: 12, bottom: 12),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        notes[index]['title'],
+                        style: TextStyle(
+                            fontSize: 15,
+                            fontWeight: FontWeight.w500,
+                            color: Colors.white.withOpacity(0.9)),
+                      ),
+                      SizedBox(
+                        height: 8,
+                      ),
+                      Text(
+                        notes[index]['description'],
+                        style: TextStyle(
+                            fontSize: 13,
+                            fontWeight: FontWeight.w400,
+                            color: Colors.white.withOpacity(0.7)),
+                      ),
+                      IconButton(
+                        onPressed: null,
+                        icon: Icon(
+                          Icons.delete,
+                          color: white.withOpacity(0.7),
+                          size: 22,
+                        ),
+                      )
+                    ],
+                  ),
                 ),
-                SizedBox(
-                  height: 8,
-                ),
-                Text(
-                  notes[index]['description'],
-                  style: TextStyle(
-                      fontSize: 13,
-                      fontWeight: FontWeight.w400,
-                      color: Colors.white.withOpacity(0.7)),
-                ),
-              ],
+              ),
             ),
-          ),
-        ),
-      );
-    }));
+          );
+        }));
   }
 }
