@@ -4,28 +4,12 @@ import 'package:ur_notes/theme/colors.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 
-class CardDetailPage extends StatefulWidget {
-
-  DocumentSnapshot docToEdit;
-  CardDetailPage({this.docToEdit});
-
-  @override
-  _CardDetailPageState createState() => _CardDetailPageState();
-}
-
-class _CardDetailPageState extends State<CardDetailPage> {
+class AddNote extends StatelessWidget {
 
   TextEditingController _titleController = TextEditingController();
   TextEditingController _descriptionController = TextEditingController();
-  
-  @override
-  void initState() {
-    _titleController = TextEditingController(text: widget.docToEdit.data()['title']);
-    _descriptionController = TextEditingController(text: widget.docToEdit.data()['content']);
 
-    // TODO: implement initState
-    super.initState();
-  }
+  CollectionReference ref = FirebaseFirestore.instance.collection('notes');
 
   @override
   Widget build(BuildContext context) {
@@ -51,21 +35,11 @@ class _CardDetailPageState extends State<CardDetailPage> {
         ),
       ),
       actions: [
-          IconButton( //Botón eliminar
-          onPressed: (){ 
-              widget.docToEdit.reference.delete().whenComplete(() => Navigator.pop(context));
-          },
-          icon: Icon(
-            Icons.delete,
-            color: white.withOpacity(0.7),
-            size: 22,
-          ),
-        ),
         IconButton(
-          onPressed: (){ //Cuando pulsa el botón guardar se actualiza
-              widget.docToEdit.reference.update({
+          onPressed: (){
+              ref.add({   //Añadiendo la nota a Firebase
                 'title': _titleController.text,
-                'content': _descriptionController.text,
+                'content': _descriptionController.text
               }).whenComplete(() => Navigator.pop(context));
           },
           icon: Icon(
