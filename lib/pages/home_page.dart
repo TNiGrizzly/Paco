@@ -1,3 +1,4 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
 import 'package:flutter/cupertino.dart';
@@ -20,6 +21,13 @@ class _HomePageState extends State<HomePage> {
   GlobalKey<ScaffoldState> _drawerKey = GlobalKey();
 
   final ref = FirebaseFirestore.instance.collection('notes');
+  final user = FirebaseAuth.instance;
+
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -72,61 +80,84 @@ class _HomePageState extends State<HomePage> {
 
   Widget getGridView() {
     var size = MediaQuery.of(context).size;
+    final List<String> titulos = [];
+    final List<String> contenidos = [];
+    final List<String> idNotas = [];
+
     return StreamBuilder(
-        stream: ref.snapshots(),
-        builder: (context, AsyncSnapshot<QuerySnapshot> snapshot) {
-          return Column(
-              children: List.generate(
-                  snapshot.hasData ? snapshot.data.docs.length : 0, (index) {
-            return GestureDetector(
-              onTap: () {
-                Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                        builder: (_) => CardDetailPage(
-                              docToEdit: snapshot.data.docs[index],
-                            ))); //Pasamos a la ventana card_detail_page
-              },
-              child: Padding(
-                padding: const EdgeInsets.only(left: 8, right: 8, bottom: 8),
-                child: Container(
-                  width: size.width,
-                  decoration: BoxDecoration(
-                      color: cardColor,
-                      borderRadius: BorderRadius.circular(8),
-                      border: Border.all(color: black.withOpacity(0.1))),
-                  child: Padding(
-                    padding: const EdgeInsets.only(
-                        left: 8, right: 8, top: 12, bottom: 12),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          snapshot.data.docs[index].data()['title'],
-                          //Titulo de la nota
-                          style: TextStyle(
-                              fontSize: 15,
-                              fontWeight: FontWeight.w500,
-                              color: Colors.white.withOpacity(0.9)),
-                        ),
-                        SizedBox(
-                          height: 8,
-                        ),
-                        Text(
-                          snapshot.data.docs[index].data()['content'],
-                          //Contenido de la nota
-                          style: TextStyle(
-                              fontSize: 13,
-                              fontWeight: FontWeight.w400,
-                              color: Colors.white.withOpacity(0.7)),
-                        ),
-                      ],
+      stream: ref.snapshots(),
+      builder: (context, AsyncSnapshot<QuerySnapshot> snapshot) {
+      
+      int notasUsr=0;
+      for (int i = 0; i < (snapshot.hasData?snapshot.data.docs.length: 0); i++) {
+        if(snapshot.data.docs[i].data()['userId']==user.currentUser.uid){
+          titulos.add(snapshot.data.docs[i].data()['title']);
+          contenidos.add(snapshot.data.docs[i].data()['content']);
+          idNotas.add(snapshot.data.docs[i].id);
+          notasUsr++;
+        }
+      }
+
+        return Column(
+            children: List.generate(notasUsr, (index) {
+              return GestureDetector(
+                onTap: () {
+                  int notaSelec=0;
+                  for (int i = 0; i < (snapshot.hasData?snapshot.data.docs.length: 0); i++) {
+                    if(snapshot.data.docs[i].id==idNotas[index]){
+                      notaSelec=i;
+                    }
+                  };
+                  Navigator.push(context, MaterialPageRoute (builder: (_)=>CardDetailPage(
+                    docToEdit: snapshot.data.docs[notaSelec],)) );//Pasamos a la ventana card_detail_page
+                },
+                child: Padding(
+                  padding: const EdgeInsets.only(left: 8, right: 8, bottom: 8),
+                  child: Container(
+                    width: size.width,
+                    decoration: BoxDecoration(
+                        color: cardColor,
+                        borderRadius: BorderRadius.circular(8),
+                        border: Border.all(color: black.withOpacity(0.1))),
+                    child: Padding(
+                      padding:
+                      const EdgeInsets.only(left: 8, right: 8, top: 12, bottom: 12),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            titulos[index],
+                            style: TextStyle(
+                                fontSize: 15,
+                                fontWeight: FontWeight.w500,
+                                color: Colors.white.withOpacity(0.9)),
+                          ),
+                          SizedBox(
+                            height: 8,
+                          ),
+                          Text(
+                            contenidos[index],
+                            style: TextStyle(
+                                fontSize: 13,
+                                fontWeight: FontWeight.w400,
+                                color: Colors.white.withOpacity(0.7)),
+                          ),
+                          IconButton(
+                            onPressed: null,
+                            icon: Icon(
+                              Icons.delete,
+                              color: white.withOpacity(0.7),
+                              size: 22,
+                            ),
+                          )
+                        ],
+                      ),
                     ),
                   ),
                 ),
-              ),
-            );
-          }));
-        });
+              );
+            }));
+      }
+    );
   }
 }

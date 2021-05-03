@@ -1,3 +1,4 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
 import 'package:ur_notes/theme/colors.dart';
@@ -10,6 +11,7 @@ class AddNote extends StatelessWidget {
   TextEditingController _descriptionController = TextEditingController();
 
   CollectionReference ref = FirebaseFirestore.instance.collection('notes');
+  final user = FirebaseAuth.instance;
 
   @override
   Widget build(BuildContext context) {
@@ -39,7 +41,8 @@ class AddNote extends StatelessWidget {
           onPressed: (){
               ref.add({   //Añadiendo la nota a Firebase
                 'title': _titleController.text,
-                'content': _descriptionController.text
+                'content': _descriptionController.text,
+                'userId': user.currentUser.uid
               }).whenComplete(() => Navigator.pop(context));
           },
           icon: Icon(
