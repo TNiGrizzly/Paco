@@ -142,14 +142,6 @@ class _HomePageState extends State<HomePage> {
                                 fontWeight: FontWeight.w400,
                                 color: Colors.white.withOpacity(0.7)),
                           ),
-                          IconButton(
-                            onPressed: null,
-                            icon: Icon(
-                              Icons.delete,
-                              color: white.withOpacity(0.7),
-                              size: 22,
-                            ),
-                          )
                         ],
                       ),
                     ),
