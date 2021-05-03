@@ -2,9 +2,10 @@
     package="com.example.ur_notes">
    <application
         android:label="ur_notes"
-        android:icon="@mipmap/ic_launcher">
+        android:icon="@mipmap/splash">
         <activity
             android:name=".MainActivity"
+            android:screenOrientation="portrait"
             android:launchMode="singleTop"
             android:theme="@style/LaunchTheme"
             android:configChanges="orientation|keyboardHidden|keyboard|screenSize|smallestScreenSize|locale|layoutDirection|fontScale|screenLayout|density|uiMode"

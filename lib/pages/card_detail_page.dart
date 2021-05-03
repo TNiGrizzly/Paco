@@ -101,9 +101,7 @@ class _CardDetailPageState extends State<CardDetailPage> {
               color: white.withOpacity(0.8)),
           decoration: InputDecoration(border: InputBorder.none, hintText: 'Contenido', hintStyle: TextStyle(color: white.withOpacity(0.5)),)
         ),
-
       ],
     );
   }
-
 }
